@@ -1,3 +1,6 @@
+import { MyCreep } from "../types";
+import creepWritePositionToRoomMemory from "../utils/creepWritePositionToRoomMemory";
+
 export default {
   run: (creep: MyCreep) => {
 
@@ -20,5 +23,6 @@ export default {
         creep.moveTo(sources[0], { visualizePathStyle: { stroke: "#ffaa00" } });
       }
     }
-  }
+  },
+  writePos: creepWritePositionToRoomMemory
 };

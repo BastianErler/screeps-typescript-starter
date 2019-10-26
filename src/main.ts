@@ -5,6 +5,7 @@ import roleUpgrader from "roles/upgrader";
 import { ErrorMapper } from "utils/ErrorMapper";
 import findNextConstructionSite from "./findNextConstructionSite";
 import spawnNewCreep from "./spawnNewCreep";
+import { MyCreep, MyGame, MyRoom } from "./types";
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
@@ -12,6 +13,7 @@ declare var Game: MyGame;
 
 export const loop = ErrorMapper.wrapLoop(() => {
   console.log(`Current game tick is ${Game.time}`);
+
 
   // Automatically delete memory of missing creeps
   for (const name in Memory.creeps) {
@@ -36,24 +38,27 @@ export const loop = ErrorMapper.wrapLoop(() => {
   };
 
   let roomName = "";
-  let roomController;
 
   for (const name in Game.rooms) {
     roomName = name;
-    roomController = Game.rooms[roomName].controller;
+    const room: MyRoom = Game.rooms[roomName];
+    const roomController = room.controller;
     for (const creepName in Game.creeps) {
       const creep: MyCreep = Game.creeps[creepName];
       if (creep.memory.role === "harvester") {
         creepsConfig.harvester.current++;
         roleHarvester.run(creep);
+        roleHarvester.writePos(creep, room);
       }
       if (creep.memory.role === "upgrader") {
         creepsConfig.upgrader.current++;
         roleUpgrader.run(creep);
+        roleUpgrader.writePos(creep, room);
       }
       if (creep.memory.role === "builder") {
         creepsConfig.builder.current++;
         roleBuilder.run(creep);
+        roleBuilder.writePos(creep, room);
       }
     }
 
@@ -72,10 +77,19 @@ export const loop = ErrorMapper.wrapLoop(() => {
       }
     }
 
-    if (Game.rooms[roomName].find(FIND_MY_CONSTRUCTION_SITES).length === 0 && roomController && roomController.level > 1) {
-      const nextExpPos = findNextConstructionSite.structureExtension(Game.rooms[roomName]);
-      if (nextExpPos) {
-        Game.rooms[roomName].createConstructionSite(nextExpPos, STRUCTURE_EXTENSION);
+    if (room.find(FIND_MY_CONSTRUCTION_SITES).length === 0 && roomController && roomController.level > 1) {
+      const nextRoad = findNextConstructionSite.road(room);
+      if (nextRoad) {
+        console.log(`try to build new road at x:${nextRoad.position.x} y: ${nextRoad.position.y}`);
+        const res = room.createConstructionSite(nextRoad.position.x, nextRoad.position.y, STRUCTURE_ROAD);
+        if (res !== 0) {
+          console.log(`could not build road errorCode: ${res}`);
+        }
+      } else {
+        const nextExpPos = findNextConstructionSite.structureExtension(room);
+        if (nextExpPos) {
+          room.createConstructionSite(nextExpPos, STRUCTURE_EXTENSION);
+        }
       }
     }
   }

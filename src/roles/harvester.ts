@@ -1,3 +1,6 @@
+import { MyCreep } from "../types";
+import creepWritePositionToRoomMemory from "../utils/creepWritePositionToRoomMemory";
+
 export default {
   run: (creep: MyCreep) => {
     if (creep.memory.working) {
@@ -21,5 +24,6 @@ export default {
       }
       creep.memory.working = (creep.carry.energy === creep.carryCapacity);
     }
-  }
+  },
+  writePos: creepWritePositionToRoomMemory
 };

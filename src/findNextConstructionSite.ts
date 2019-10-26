@@ -1,4 +1,5 @@
 import { Position } from "source-map";
+import { MyRoom } from "./types";
 
 const drawCircleOnPos = (pos: RoomPosition) => {
   new RoomVisual("W1N1").circle(
@@ -19,6 +20,29 @@ const extensionCanBeBuildOnPas = (room: Room, pos: RoomPosition) => {
 };
 
 export default {
+  road: (room: MyRoom) => {
+    const spawn = Game.getObjectById(room.memory.spawnId);
+    if (!(spawn instanceof StructureSpawn)) {
+      return undefined;
+    }
+    if (room.memory.potentialRoads) {
+      const nextRoad = room.memory.potentialRoads.reduce((accumulator, currentValue) => {
+        if (accumulator.passingCount > currentValue.passingCount) {
+          if (room.lookAt(accumulator.position.x, accumulator.position.y).find(objAtPos => objAtPos.type === "structure") === undefined) {
+            return accumulator;
+          }
+        }
+        return currentValue;
+      }, {
+        passingCount: 0,
+        position: new RoomPosition(spawn.pos.x, spawn.pos.y, spawn.pos.roomName)
+      });
+      if (nextRoad.passingCount > 5) {
+        return nextRoad;
+      }
+    }
+    return undefined;
+  },
   structureExtension: (room: MyRoom) => {
     if (room.memory.spawnId === undefined) {
       room.memory.spawnId = room.find(FIND_MY_SPAWNS)[0].id;

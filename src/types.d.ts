@@ -2,11 +2,14 @@
 
 // memory extension samples
 
-interface MyGame extends Game{
+import { Position } from "source-map";
+
+interface MyGame extends Game {
   /**
    * A hash containing all your creeps with creep names as hash keys.
    */
   creeps: { [creepName: string]: MyCreep };
+  rooms: { [roomName: string]: MyRoom };
 }
 
 interface MyCreep extends Creep {
@@ -15,10 +18,16 @@ interface MyCreep extends Creep {
 
 interface MyRoomMemory extends RoomMemory {
   spawnId?: string;
+  potentialRoads?: PotentialRoad[];
 }
 
 interface MyRoom extends Room {
   memory: MyRoomMemory
+}
+
+interface PotentialRoad {
+  passingCount: number,
+  position: RoomPosition,
 }
 
 interface MyCreepMemory extends CreepMemory {
