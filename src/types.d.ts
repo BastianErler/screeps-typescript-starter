@@ -34,6 +34,7 @@ interface MyCreepMemory extends CreepMemory {
   role: string;
   room: string;
   working: boolean;
+  lastPosition?: RoomPosition;
 }
 
 interface Memory {

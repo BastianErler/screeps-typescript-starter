@@ -1,5 +1,9 @@
 import { MyCreep, MyRoom } from "../types";
 
+const posEqual = (pos1: RoomPosition, pos2: RoomPosition) => {
+  return pos1.x === pos2.x && pos1.y === pos2.y && pos1.roomName === pos2.roomName;
+};
+
 export default (creep: MyCreep, room: MyRoom) => {
   if (room.memory.potentialRoads === undefined) {
     room.memory.potentialRoads = [];
@@ -10,11 +14,14 @@ export default (creep: MyCreep, room: MyRoom) => {
     && potPos.position.roomName === creep.pos.roomName
   );
   if (potentialPosition) {
-    potentialPosition.passingCount += 1;
+    if (creep.memory.lastPosition && !posEqual(creep.pos, creep.memory.lastPosition)) {
+      potentialPosition.passingCount += 1;
+    }
   } else {
     room.memory.potentialRoads.push({
       passingCount: 1,
-      position: new RoomPosition(creep.pos.x, creep.pos.y, creep.pos.roomName)
+      position: creep.pos
     });
   }
+  creep.memory.lastPosition = creep.pos;
 }
