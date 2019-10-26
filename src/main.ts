@@ -6,6 +6,7 @@ import { ErrorMapper } from "utils/ErrorMapper";
 import findNextConstructionSite from "./findNextConstructionSite";
 import spawnNewCreep from "./spawnNewCreep";
 import { MyCreep, MyGame, MyRoom } from "./types";
+import drawCircleOnPosition from "./utils/drawCircleOnPosition";
 
 // When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
 // This utility uses source maps to get the line numbers and file names of the original, TS source code
@@ -72,11 +73,10 @@ export const loop = ErrorMapper.wrapLoop(() => {
       } else if (creepsConfig.builder.current < creepsConfig.builder.wanted && Game.rooms[roomName].find(FIND_MY_CONSTRUCTION_SITES).length > 0) {
         console.log("need new Builder");
         spawnNewCreep("builder", roomName);
-      } else if (creepsConfig.builder.current < 6) {
+      } else if (creepsConfig.builder.current < 3) {
         spawnNewCreep("upgrader", roomName);
       }
     }
-
     if (room.find(FIND_MY_CONSTRUCTION_SITES).length === 0 && roomController && roomController.level > 1) {
       const nextRoad = findNextConstructionSite.road(room);
       if (nextRoad) {

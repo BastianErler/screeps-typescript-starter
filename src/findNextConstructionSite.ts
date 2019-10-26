@@ -1,13 +1,6 @@
 import { Position } from "source-map";
 import { MyRoom } from "./types";
-
-const drawCircleOnPos = (pos: RoomPosition) => {
-  new RoomVisual("W1N1").circle(
-    pos.x,
-    pos.y,
-    { fill: "transparent", radius: 0.3, stroke: "#f00" }
-  );
-};
+import drawCircleOnPosition from "./utils/drawCircleOnPosition";
 
 const extensionCanBeBuildOnPas = (room: Room, pos: RoomPosition) => {
   const posObjects = room.lookAt(pos);
@@ -27,12 +20,12 @@ export default {
     }
     if (room.memory.potentialRoads) {
       const nextRoad = room.memory.potentialRoads.reduce((accumulator, currentValue) => {
-        if (accumulator.passingCount > currentValue.passingCount) {
-          if (room.lookAt(accumulator.position.x, accumulator.position.y).find(objAtPos => objAtPos.type === "structure") === undefined) {
-            return accumulator;
+        if (currentValue.passingCount > accumulator.passingCount ) {
+          if (room.lookAt(currentValue.position.x, currentValue.position.y).find(objAtPos => objAtPos.type === "structure") === undefined) {
+            return currentValue;
           }
         }
-        return currentValue;
+        return accumulator;
       }, {
         passingCount: 0,
         position: new RoomPosition(spawn.pos.x, spawn.pos.y, spawn.pos.roomName)
@@ -60,7 +53,7 @@ export default {
         spawnPos.y - diagonal,
         spawnPos.roomName
       );
-      drawCircleOnPos(startPos);
+      drawCircleOnPosition(startPos);
       if (extensionCanBeBuildOnPas(room, startPos)) {
         return startPos;
       }
@@ -74,7 +67,7 @@ export default {
       let whileLoopRounds = 0;
       while (!(startPos.x === currentPos.x && startPos.y === currentPos.y) && whileLoopRounds < 10000) {
         whileLoopRounds++;
-        drawCircleOnPos(currentPos);
+        drawCircleOnPosition(currentPos);
         if (extensionCanBeBuildOnPas(room, currentPos)) {
           return currentPos;
         }
