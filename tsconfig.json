@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "module": "esnext",
-    "lib": ["esnext"],
+    "lib": [
+      "esnext"
+    ],
     "target": "es2017",
     "moduleResolution": "Node",
     "outDir": "dist",
@@ -15,5 +17,8 @@
   },
   "exclude": [
     "node_modules"
-  ]
+  ],
+  "globalDependencies": {
+    "screeps": "github:screepers/Screeps-Typescript-Declarations/dist/screeps.d.ts"
+  }
 }
