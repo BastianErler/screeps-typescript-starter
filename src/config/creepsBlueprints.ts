@@ -10,6 +10,18 @@ const config = [
   {
     bluePrint: [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
     energyNeeded: 400
+  },
+  {
+    bluePrint: [WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE],
+    energyNeeded: 450
+  },
+  {
+    bluePrint: [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE],
+    energyNeeded: 500
+  },
+  {
+    bluePrint: [WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE],
+    energyNeeded: 550
   }
 ];
 export default {
