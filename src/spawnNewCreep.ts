@@ -1,14 +1,14 @@
 const getBluePrint = (energyAvailable: number): BodyPartConstant[] => {
-  const workPartsCount = Math.round(energyAvailable * 0.5  / 100);
+  const workPartsCount = Math.round(energyAvailable * 0.5 / 100);
   const energyAvailableAfterWorkParts = energyAvailable - workPartsCount * 100;
-  const carryPartsCount = Math.round(energyAvailableAfterWorkParts * 1.2 / 100);
-  const energyAvailableAfterCarryParts = energyAvailableAfterWorkParts - carryPartsCount * 50;
-  const moveParts = Math.floor(energyAvailableAfterCarryParts / 50);
+  const movePartsCount = Math.round(energyAvailableAfterWorkParts * 1.2 / 100);
+  const energyAvailableAfterCarryParts = energyAvailableAfterWorkParts - movePartsCount * 50;
+  const carryPartsCount = Math.floor(energyAvailableAfterCarryParts / 50);
   const bodyParts: BodyPartConstant[] = [];
-  console.log(workPartsCount, carryPartsCount, moveParts);
+  console.log(workPartsCount, carryPartsCount, movePartsCount);
   pushPartTimes(bodyParts, WORK, workPartsCount);
   pushPartTimes(bodyParts, CARRY, carryPartsCount);
-  pushPartTimes(bodyParts, MOVE, moveParts);
+  pushPartTimes(bodyParts, MOVE, movePartsCount);
   console.log(bodyParts);
   return bodyParts;
 };
@@ -19,12 +19,10 @@ const pushPartTimes = (bodyParts: BodyPartConstant[], part: BodyPartConstant, ti
   }
 };
 
-export default (role: string, roomName: string) => {
+export default (role: string, roomName: string, energy: number) => {
   for (const spawn in Game.spawns) {
     const result = Game.spawns[spawn].spawnCreep(
-      getBluePrint(
-        Game.rooms[roomName].energyCapacityAvailable
-      ),
+      getBluePrint(energy),
       role + Math.round(Math.random() * 1000),
       { memory: { role } }
     );

@@ -49,7 +49,7 @@ export const loop = ErrorMapper.wrapLoop(() => {
           return potPos.passingCount > 25;
         });
         room.memory.potentialRoads.forEach((potPos) => {
-          potPos.passingCount = potPos.passingCount / 2;
+          potPos.passingCount = Math.round(potPos.passingCount / 2);
         });
       }
     }
@@ -79,18 +79,24 @@ export const loop = ErrorMapper.wrapLoop(() => {
       });
     }
 
+    if (creepsConfig.harvester.current === 0 &&
+      Game.rooms[roomName].energyCapacityAvailable !== Game.rooms[roomName].energyAvailable
+      && Game.rooms[roomName].energyAvailable >= 300) {
+      spawnNewCreep("harvester", roomName, Game.rooms[roomName].energyAvailable);
+    }
+
     if (Game.rooms[roomName].energyCapacityAvailable === Game.rooms[roomName].energyAvailable) {
       if (creepsConfig.harvester.current < creepsConfig.harvester.wanted) {
         console.log("need new Harvester");
-        spawnNewCreep("harvester", roomName);
+        spawnNewCreep("harvester", roomName, Game.rooms[roomName].energyCapacityAvailable);
       } else if (creepsConfig.upgrader.current < creepsConfig.upgrader.wanted) {
         console.log("need new Upgrader");
-        spawnNewCreep("upgrader", roomName);
+        spawnNewCreep("upgrader", roomName, Game.rooms[roomName].energyCapacityAvailable);
       } else if (creepsConfig.builder.current < creepsConfig.builder.wanted && Game.rooms[roomName].find(FIND_MY_CONSTRUCTION_SITES).length > 0) {
         console.log("need new Builder");
-        spawnNewCreep("builder", roomName);
-      } else if (creepsConfig.builder.current < 3) {
-        spawnNewCreep("upgrader", roomName);
+        spawnNewCreep("builder", roomName, Game.rooms[roomName].energyCapacityAvailable);
+      } else if (creepsConfig.upgrader.current < 5) {
+        spawnNewCreep("upgrader", roomName, Game.rooms[roomName].energyCapacityAvailable);
       }
     }
     if (room.find(FIND_MY_CONSTRUCTION_SITES).length === 0 && roomController && roomController.level > 1) {
